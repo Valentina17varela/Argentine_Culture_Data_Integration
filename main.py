@@ -23,8 +23,8 @@ def run():
     bibliotecas_csv = dataCollector.obtener_datos(bibliotecas,'bibliotecas')
     
     # Data processing and table normalization
-    dataCollector.procesar_datos(museos_csv,cines_csv,bibliotecas_csv)
-    
+    unica, conjuntos, info_cines = dataCollector.procesar_datos(museos_csv,cines_csv,bibliotecas_csv)
+
 
 if __name__ == '__main__':
     run()

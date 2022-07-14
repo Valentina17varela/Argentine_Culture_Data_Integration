@@ -34,8 +34,8 @@ def procesar_datos(museos,cines,bibliotecas):
     df_cines = pd.read_csv(cines,encoding='UTF-8')
     df_bibliotecas = pd.read_csv(bibliotecas,encoding='UTF-8')
     
-    #creo una variable con las columnas de interés
-    cols_interes = ['cod_localidad', 'id_provincia', 'id_departamento',
+    # Columns of interest for standardization
+    columnas = ['cod_localidad', 'id_provincia', 'id_departamento',
                     'categoría', 'provincia', 'localidad', 'nombre',
                     'domicilio', 'código postal', 'número de teléfono',
                     'mail', 'web']
@@ -43,7 +43,6 @@ def procesar_datos(museos,cines,bibliotecas):
 
     # Normalization of the information by changing the names of the columns 
     # to create the single table
-    
     df_museos.rename(columns = {'Cod_Loc' : 'cod_localidad',
                                 'IdProvincia' : 'id_provincia',
                                 'IdDepartamento' : 'id_departamento',
@@ -85,15 +84,37 @@ def procesar_datos(museos,cines,bibliotecas):
                                     'Web' : 'web'},
                         inplace = True)
     
-    # data frame con el total de columnas
-    tabla_unica = pd.concat([df_museos, df_cines, df_bibliotecas])
-
-    #data frame solo con las columnas de interes a normalizar
-    tabla_unica = tabla_unica.loc[:, cols_interes]    #contiene solo las columnas de interes a normalizar
+    # Dataframe with total number of columns
+    tabla_total = pd.concat([df_museos, df_cines, df_bibliotecas])
+    tabla_unica = tabla_total.loc[:, columnas]    
     tabla_unica['fecha_de_carga'] = date.today()
     
-    print(date.today())
-    print(tabla_unica)
+    
+    # Total number of records by category
+    total_categoria = tabla_unica.groupby(['categoría']).size().to_frame(name = 'Registros Categoria')
+
+    # Total number of records by source
+    total_fuentes = tabla_total.groupby(['categoría','fuente']).size().to_frame(name = 'Registros Fuente')
+
+    # Number of records by province and category
+    total_provincias_categorias = tabla_unica[['categoría', 'provincia']].value_counts().to_frame('Registros Provincia&Categoria')
+
+
+    # Table for the joint data
+    datos_conjuntos = total_categoria.merge(total_fuentes, how='outer',
+                                left_index=True, right_index=True)
+    datos_conjuntos= datos_conjuntos.merge(total_provincias_categorias, how='outer',
+                        left_index=True, right_index=True)
+    datos_conjuntos['fecha_de_carga'] = date.today()
+
+
+    # Information table for cinemas
+    tabla_cine = df_cines.loc[:, ['provincia', 'Pantallas', 'Butacas', 'espacio_INCAA']].copy()
+    tabla_cine['fecha_de_carga'] = date.today()
+    
+    
+    return tabla_unica, datos_conjuntos, tabla_cine
+
     
     
     
