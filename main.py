@@ -5,6 +5,10 @@ Author: Valentina Varela Alzate
 
 import userInterface
 import dataCollector
+import baseDatos
+from sqlalchemy import create_engine
+import psycopg2
+from sqlalchemy_utils import create_database
 
 
 def run():
@@ -25,6 +29,16 @@ def run():
     # Data processing and table normalization
     unica, conjuntos, info_cines = dataCollector.procesar_datos(museos_csv,cines_csv,bibliotecas_csv)
 
+    userInterface.presentacion_tablas();
 
+    # Creation of tables in the database and visualization
+    create_database('postgresql+psycopg2://postgres:admin123@localhost:1717/informacionCultural')
+    SQLengine = create_engine('postgresql+psycopg2://postgres:admin123@localhost:1717/informacionCultural')
+    
+    baseDatos.creacion_DB(unica,"Tabla normalizada",SQLengine)
+    baseDatos.creacion_DB(conjuntos,"Datos conjuntos",SQLengine)
+    baseDatos.creacion_DB(info_cines,"Informacion de cines",SQLengine)
+    
+    
 if __name__ == '__main__':
     run()

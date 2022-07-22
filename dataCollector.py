@@ -2,6 +2,7 @@ import requests
 import os
 from datetime import date
 import pandas as pd
+import numpy as np
 
 
 def obtener_datos(url, categoria):
@@ -88,6 +89,7 @@ def procesar_datos(museos,cines,bibliotecas):
     tabla_total = pd.concat([df_museos, df_cines, df_bibliotecas])
     tabla_unica = tabla_total.loc[:, columnas]    
     tabla_unica['fecha_de_carga'] = date.today()
+    tabla_unica = tabla_unica.replace('s/d', np.nan)
     
     
     # Total number of records by category
