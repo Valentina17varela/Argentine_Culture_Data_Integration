@@ -7,8 +7,8 @@ import userInterface
 import dataCollector
 import baseDatos
 from sqlalchemy import create_engine
-import psycopg2
 from sqlalchemy_utils import create_database
+from sqlalchemy_utils import database_exists
 
 
 def run():
@@ -32,8 +32,10 @@ def run():
     userInterface.presentacion_tablas();
 
     # Creation of tables in the database and visualization
-    create_database('postgresql+psycopg2://postgres:admin123@localhost:1717/informacionCultural')
-    SQLengine = create_engine('postgresql+psycopg2://postgres:admin123@localhost:1717/informacionCultural')
+    db = 'postgresql+psycopg2://postgres:admin123@localhost:1717/informacionCultural'
+    if not database_exists(db):
+        create_database(db)
+    SQLengine = create_engine(db)
     
     baseDatos.creacion_DB(unica,"Tabla normalizada",SQLengine)
     baseDatos.creacion_DB(conjuntos,"Datos conjuntos",SQLengine)

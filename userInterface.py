@@ -14,7 +14,7 @@ def presentacion_tablas():
           -------------------------------------------------------------
           |     Bibliotecas, museos y salas de cines argentinos       |
           -------------------------------------------------------------
-          | A continuacion se mostrara la informacion cultural        |
-          | recolectada.                                              |
+          | A continuacion se puede encontrar las bases de datos con  |
+          | la informacion recolectada.                               |
           -------------------------------------------------------------
           ''')
